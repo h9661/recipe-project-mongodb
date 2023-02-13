@@ -1,6 +1,6 @@
 buildscript {
 	ext {
-		springBootVersion = '2.1.0.RELEASE'
+		springBootVersion = '2.3.0.RELEASE'
 	}
 	repositories {
 		mavenCentral()
@@ -36,10 +36,14 @@ dependencies {
 	runtime('org.springframework.boot:spring-boot-devtools')
 	compile('org.springframework.boot:spring-boot-starter-data-mongodb-reactive')
 	compile 'org.webjars:bootstrap:3.3.7-1'
-	compileOnly('org.projectlombok:lombok')
+	compile('org.projectlombok:lombok')
+	annotationProcessor("org.projectlombok:lombok")
+	testAnnotationProcessor("org.projectlombok:lombok")
+	compile("com.querydsl:querydsl-jpa")
+	annotationProcessor("com.querydsl:querydsl-jpa")
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('io.projectreactor:reactor-test')
-
+	implementation 'org.hibernate:hibernate-validator:6.1.6.Final'
 }
 
 //export test coverage
