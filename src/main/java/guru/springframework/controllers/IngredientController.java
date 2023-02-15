@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
 
 /**
  * Created by jt on 6/28/17.
@@ -35,6 +36,11 @@ public class IngredientController {
     @InitBinder
     void InitBinder(WebDataBinder webDataBinder){
         this.webDataBinder = webDataBinder;
+    }
+
+    @ModelAttribute("uomList")
+    public Flux<UnitOfMeasureCommand> populateUomList(){
+        return unitOfMeasureService.listAllUoms();
     }
 
     @GetMapping("/recipe/{recipeId}/ingredients")
@@ -77,13 +83,11 @@ public class IngredientController {
     public String updateRecipeIngredient(@PathVariable String recipeId,
                                          @PathVariable String id, Model model){
         model.addAttribute("ingredient", ingredientService.findByRecipeIdAndIngredientId(recipeId, id));
-
-        model.addAttribute("uomList", unitOfMeasureService.listAllUoms());
         return "recipe/ingredient/ingredientform";
     }
 
     @PostMapping("recipe/{recipeId}/ingredient")
-    public String saveOrUpdate(@ModelAttribute("ingredient") IngredientCommand command, Model model){
+    public String saveOrUpdate(@ModelAttribute("ingredient") IngredientCommand command){
         webDataBinder.validate();
         BindingResult bindingResult = webDataBinder.getBindingResult();
 
@@ -92,7 +96,6 @@ public class IngredientController {
             bindingResult.getAllErrors().forEach(objectError -> {
                 log.debug(objectError.toString());
             });
-            model.addAttribute("uomList", unitOfMeasureService.listAllUoms());
 
             return "recipe/ingredient/ingredientform";
         }
